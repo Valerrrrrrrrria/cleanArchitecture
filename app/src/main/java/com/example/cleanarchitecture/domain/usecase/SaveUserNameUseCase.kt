@@ -1,10 +1,11 @@
 package com.example.cleanarchitecture.domain.usecase
 
 import com.example.cleanarchitecture.domain.models.SaveUserNameParams
+import com.example.cleanarchitecture.domain.repository.UserRepository
 
-class SaveUserNameUseCase {
+class SaveUserNameUseCase(private val userRepository: UserRepository) {
 
-    fun execute(param: SaveUserNameParams) : Boolean {
-        return param.name.isNotEmpty()
+    fun execute(param: SaveUserNameParams): Boolean {
+        return userRepository.saveName(saveParam = param)
     }
 }

@@ -1,9 +1,10 @@
-package com.example.cleanarchitecture.domain.presentation
+package com.example.cleanarchitecture.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.example.cleanarchitecture.R
+import com.example.cleanarchitecture.data.repository.UserRepositoryImpl
 import com.example.cleanarchitecture.databinding.ActivityMainBinding
 import com.example.cleanarchitecture.domain.models.SaveUserNameParams
 import com.example.cleanarchitecture.domain.usecase.GetUserNameUseCase
@@ -13,8 +14,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val getUserNameUseCase = GetUserNameUseCase()
-    private val saveUserNameUseCase = SaveUserNameUseCase()
+    private val userRepository by lazy(LazyThreadSafetyMode.NONE) { UserRepositoryImpl(context = applicationContext) }
+    private val getUserNameUseCase by lazy(LazyThreadSafetyMode.NONE)  { GetUserNameUseCase(userRepository = userRepository) }
+    private val saveUserNameUseCase by lazy(LazyThreadSafetyMode.NONE)  { SaveUserNameUseCase(userRepository = userRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
