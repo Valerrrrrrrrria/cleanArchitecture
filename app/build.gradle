@@ -51,6 +51,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
 
-    //DataBinding
+    //data binding
     implementation 'androidx.databinding:databinding-runtime:7.4.2'
+
+    //view model + livedata
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
 }

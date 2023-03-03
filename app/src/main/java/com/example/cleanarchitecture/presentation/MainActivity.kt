@@ -1,54 +1,40 @@
 package com.example.cleanarchitecture.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.cleanarchitecture.R
-import com.example.cleanarchitecture.data.repository.UserRepositoryImpl
-import com.example.cleanarchitecture.data.storage.SharedPrefUserStorage
-import com.example.cleanarchitecture.data.storage.UserStorage
 import com.example.cleanarchitecture.databinding.ActivityMainBinding
-import com.example.cleanarchitecture.domain.models.SaveUserNameParams
-import com.example.cleanarchitecture.domain.usecase.GetUserNameUseCase
-import com.example.cleanarchitecture.domain.usecase.SaveUserNameUseCase
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val userRepository by lazy(LazyThreadSafetyMode.NONE) {
-        UserRepositoryImpl(userStorage = SharedPrefUserStorage(context = applicationContext))
-    }
-
-    private val getUserNameUseCase by lazy(LazyThreadSafetyMode.NONE)  {
-        GetUserNameUseCase(
-            userRepository = userRepository
-        )
-    }
-
-    private val saveUserNameUseCase by lazy(LazyThreadSafetyMode.NONE)  {
-        SaveUserNameUseCase(
-            userRepository = userRepository
-        )
-    }
+    private lateinit var vm: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        vm = ViewModelProvider(this, MainViewModelFactory(this))
+            .get(MainViewModel::class.java)
+
+        // subscribe on resultLive update
+        vm.resultLive.observe(this, Observer {
+            binding.dataTextView.text = it
+        })
+
         // click on SaveData Button
         binding.sendDataButton.setOnClickListener {
             val text = binding.dataEditText.text.toString()
-            val params = com.example.cleanarchitecture.domain.models.SaveUserNameParams(name = text)
-            val result = saveUserNameUseCase.execute(param = params)
-
-            binding.dataTextView.text = "Save result = $result"
+            vm.save(text)
         }
 
         // click on receiveData Button
         binding.receiveDataButton.setOnClickListener {
-            val userName = getUserNameUseCase.execute()
-            binding.dataTextView.text = "${userName.firstName} ${userName.lastName}"
+            vm.load()
         }
     }
 }
