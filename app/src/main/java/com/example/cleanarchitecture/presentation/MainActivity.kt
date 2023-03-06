@@ -6,9 +6,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.cleanarchitecture.R
+import com.example.cleanarchitecture.app.App
 import com.example.cleanarchitecture.databinding.ActivityMainBinding
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var vmFactory: MainViewModelFactory
 
     private lateinit var binding: ActivityMainBinding
 
@@ -18,7 +23,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        vm = ViewModelProvider(this, MainViewModelFactory(this))
+        (applicationContext as App).appComponent.inject(this)
+
+        vm = ViewModelProvider(this, vmFactory)
             .get(MainViewModel::class.java)
 
         // subscribe on resultLive update
