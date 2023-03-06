@@ -5,14 +5,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.cleanarchitecture.R
 import com.example.cleanarchitecture.databinding.ActivityMainBinding
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.components.SingletonComponent
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -26,19 +21,19 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         // subscribe on resultLive update
-        vm.resultLive.observe(this, Observer {
-            binding.dataTextView.text = it
+        vm.stateLive.observe(this, Observer {
+            binding.dataTextView.text = "${it.firstName} ${it.lastName} ${it.saveResult}"
         })
 
         // click on SaveData Button
         binding.sendDataButton.setOnClickListener {
             val text = binding.dataEditText.text.toString()
-            vm.save(text)
+            vm.send(SaveEvent(text = text))
         }
 
         // click on receiveData Button
         binding.receiveDataButton.setOnClickListener {
-            vm.load()
+            vm.send(LoadEvent())
         }
     }
 }

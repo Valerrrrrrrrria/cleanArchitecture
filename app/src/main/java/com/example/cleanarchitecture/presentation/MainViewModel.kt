@@ -15,11 +15,12 @@ class MainViewModel @Inject constructor(
     private val saveUserNameUseCase: SaveUserNameUseCase
 ) : ViewModel() {
 
-    private var resultLiveMutable = MutableLiveData<String>()
-    var resultLive: LiveData<String> = resultLiveMutable
+    private var stateLiveMutable = MutableLiveData<MainState>()
+    var stateLive: LiveData<MainState> = stateLiveMutable
 
     init {
         Log.e("INFOINFO", "VM created")
+        stateLiveMutable.value = MainState(saveResult = false, firstName = "", lastName = "")
     }
 
     override fun onCleared() {
@@ -27,14 +28,30 @@ class MainViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun save(text: String) {
-        val params = com.example.cleanarchitecture.domain.models.SaveUserNameParams(name = text)
-        val resultData = saveUserNameUseCase.execute(param = params)
-        resultLiveMutable.value = "Save result = $resultData"
+    fun send(event: MainEvent) {
+
+        when (event) {
+            is SaveEvent -> save(text = event.text)
+            is LoadEvent -> load()
+        }
     }
 
-    fun load() {
+    private fun save(text: String) {
+        val params = com.example.cleanarchitecture.domain.models.SaveUserNameParams(name = text)
+        val resultData = saveUserNameUseCase.execute(param = params)
+        stateLiveMutable.value = MainState(
+            saveResult = resultData,
+            firstName = stateLiveMutable.value!!.firstName,
+            lastName = stateLiveMutable.value!!.lastName
+        )
+    }
+
+    private fun load() {
         val userName = getUserNameUseCase.execute()
-        resultLiveMutable.value = "${userName.firstName} ${userName.lastName}"
+        stateLiveMutable.value = MainState(
+            saveResult = stateLiveMutable.value!!.saveResult,
+            firstName = userName.firstName,
+            lastName = userName.lastName
+        )
     }
 }
