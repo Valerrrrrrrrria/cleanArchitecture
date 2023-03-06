@@ -3,6 +3,9 @@ package com.example.cleanarchitecture.di
 import com.example.cleanarchitecture.domain.repository.UserRepository
 import com.example.cleanarchitecture.domain.usecase.GetUserNameUseCase
 import com.example.cleanarchitecture.domain.usecase.SaveUserNameUseCase
+import com.example.cleanarchitecture.presentation.MainPresenter
+import com.example.cleanarchitecture.presentation.MainPresenterImpl
+import com.example.cleanarchitecture.presentation.MainView
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

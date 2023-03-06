@@ -1,44 +1,36 @@
 package com.example.cleanarchitecture.presentation
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.cleanarchitecture.R
 import com.example.cleanarchitecture.databinding.ActivityMainBinding
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.components.SingletonComponent
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val vm: MainViewModel by viewModels()
+    //private val presenter: MainPresenter = MainPresenterImpl()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        // subscribe on resultLive update
-        vm.resultLive.observe(this, Observer {
-            binding.dataTextView.text = it
-        })
-
         // click on SaveData Button
         binding.sendDataButton.setOnClickListener {
             val text = binding.dataEditText.text.toString()
-            vm.save(text)
+            presenter.save(text)
         }
 
         // click on receiveData Button
         binding.receiveDataButton.setOnClickListener {
-            vm.load()
+            presenter.load()
         }
+    }
+
+    override fun showResult(text: String) {
+        binding.dataTextView.text = text
     }
 }
