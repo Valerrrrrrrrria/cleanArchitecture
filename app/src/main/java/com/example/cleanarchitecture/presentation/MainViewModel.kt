@@ -18,15 +18,6 @@ class MainViewModel @Inject constructor(
     private var resultLiveMutable = MutableLiveData<String>()
     var resultLive: LiveData<String> = resultLiveMutable
 
-    init {
-        Log.e("INFOINFO", "VM created")
-    }
-
-    override fun onCleared() {
-        Log.e("INFOINFO", "Activity cleared")
-        super.onCleared()
-    }
-
     fun save(text: String) {
         val params = com.example.cleanarchitecture.domain.models.SaveUserNameParams(name = text)
         val resultData = saveUserNameUseCase.execute(param = params)
